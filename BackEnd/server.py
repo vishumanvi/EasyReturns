@@ -3,6 +3,9 @@ from flask import request
 from flask import jsonify
 import redis
 from ast import literal_eval
+import usps_formats as uspsReq
+import requests
+import json
 
 app = Flask(__name__)
 _redis_port = 6379
@@ -44,17 +47,26 @@ def api_echo():
 
 
 @app.route('/cost', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api_calculate_cost(packageDetails):
-    if request.method == 'GET':
+def api_calculate_cost():
+    if request.method == 'POST':
         # get the fields from packageDetails
         # call the USPS apis to verify the address
         # call the USPS apis for cost calculation
         # Return different costs
-        pass
+        # req = {'zipSource': 95129,
+        #        'zipDestination': 10001, 'ounces': 4.78}
+        req = request.json
+        xmlReq = uspsReq.getPriceCalculatorReq(req)
+        url = (
+            "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML={}".format(xmlReq))
+        r = requests.get(url)
+        response = r.content
+        print(response)
+        return ' ', 201
 
 
-@app.route('/payment', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api_make_payment(transactionDetails):
+@app.route('/shipment', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_request_shipment(transactionDetails):
     if request.method == 'POST':
         # get entire package data like address etc from transactionDetails
         # call payment api to make payment
