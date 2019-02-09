@@ -60,9 +60,8 @@ def api_calculate_cost():
         url = (
             "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML={}".format(xmlReq))
         r = requests.get(url)
-        response = r.content
-        print(response)
-        return ' ', 201
+        res = uspsReq.getPriceResponse(r.content)
+        return json.dumps(res), 201
 
 
 @app.route('/shipment', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
