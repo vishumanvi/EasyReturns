@@ -5,30 +5,41 @@ Online e-commerce has now surpassed retail purchases in the US and will continue
 EasyReturns simplifies sending and returning packages from home, providing a more secure and convenient way to customers. The end to end app workflow is as follows.
 
 1. Customer login to EasyReturns app.
-2. Customer enters sender and recipient address (can be enhanced by taking a picture of original shipping label and auto-populating addresses and swapping them)
+2. Customer enters sender and recipient address (can be enhanced by taking a picture of original shipping label and auto-populating addresses and swapping them) 
 3. App shows prices for various shipping options (First class, Priority, etc) using USPS APIs.
 4. Customer makes the payment using Credit Card/Paypal/Apple Pay.
 5. On successful payment, app generates a QR code and a unique number.
 6. Customer can either print it or write down just the number on a paper and stick it to the package.
 7. Customer then schedules a package pickup. In case of apartments/gated communities that have a locker facility, app provides an option to generate a passcode for one of the available locker that customer can place the package in. (Future enhancement)
 8. Customer places the package in the locker.
-9. USPS Postman gets notified about the pickup with locker details. Else, pickup from home (current process)
+9. USPS Postman gets notified about the pickup with locker details. Else, pickup from home (current process) 
 10. USPS Postman scans the barcode/QR code/unique number on the package to verify if it's valid and paid for and automatically gets sender and receiver details required to ship it.
-11. This way, no sender/receiver sensitive PII data is ever printed on a shipping label and therefore more secure.
+
+This way, no sender/receiver sensitive PII data is ever printed on a shipping label and therefore more secure.
 
 ## How we built it
-<>
+Technologies: 
+Front end: HTML 5, CSS 3, Javascript
+Backend : Python, Flask, PickleDB, BeautifulSoup
+External: USPS APIs (https://www.usps.com/business/web-tools-apis/documentation-updates.htm)
 
 ## Challenges we ran into
-<>
+1. Understanding and parsing USPS APIs XML request/responses.
+2. Integrating front end and back end.
+3. Time constraints in completing the hackathon. 
 
 ## Accomplishments that we're proud of
-<>
+1. Integrated with production USPS APIs.
+2. Created a working software in few hours.
+3. Design that supports both mobile and web app.
+4. We applied agile methodologies for managing work.
+
 
 ## What we learned
-<>
+1. Integration issues.
+2. Time management.
 
 ## What's next for EasyReturns
-<>
+1. Enhancements for smart locker feature.
+2. Integration with USPS pickup service.
 
-## Built With
