@@ -1,0 +1,107 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
+
+<!-- Add your site or application content here -->
+<nav>
+  <div class="nav-wrapper indigo darken-4">
+    <a href="#" class="brand-logo center" style="padding-left: 150px;">Your Codes</a>
+  </div>
+</nav>
+
+<div class="row">
+
+  <div class="col s12 m4 l3">
+
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+      <li><div class="user-view">
+        <div class="background  indigo darken-4">
+        </div>
+        <a href="#user"><img class="circle" src="images/usps.jpg"></a>
+        <a href="#name"><span class="white-text name">Jane Doe</span></a>
+        <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+      </div></li>
+
+      <li><a href="dashboard.html"><i class="material-icons">dashboard</i>Dashboard</a></li>
+      <li><a href="settings.html"><i class="material-icons">settings</i>Account Settings</a></li>
+      <li><a href="aboutus.html"><i class="material-icons">info</i>About Us</a></li>
+      <li><a href="contactus.html"><i class="material-icons">local_phone</i>Contact</a></li>
+      <li><a href="generatedcode.html"><i class="material-icons">code</i>Your Code</a></li>
+    </ul>
+    <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></div>
+</div>
+
+<h3 class="center" style="margin-left: 100px;"> Here's your code!</h3>
+<h2 class="center" style="margin-left: 100px;" id="code">720869cf511066abb5d9c4d</h2>
+<img class="center" style="margin-left: 670px;" src="img/qrimage.png" alt="QR Code">
+<div class="row center" style="margin-left: 100px;">
+  <a class="waves-effect waves-light btn-large indigo darken-4 white-text">Print Shipping label</a>
+  <a class="waves-effect waves-light btn-large indigo darken-4 white-text">Schedule pickup</a>
+</div>
+
+<script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
+<script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+
+
+
+<!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+<script>
+  window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+  ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
+    var code = getUrlVars()["val"];
+    $('#code').html(code);
+  });
+
+  function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+</script>
+
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript" src="js/materialize.min.js"></script>
+</body>
+
+</html>
