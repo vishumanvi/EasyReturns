@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request
+from flask import request, redirect, url_for
 from flask import jsonify
 import redis
 from ast import literal_eval
@@ -46,14 +46,17 @@ def api_calculate_cost():
         # Return different costs
         # req = {'zipSource': 95129,
         #        'zipDestination': 10001, 'ounces': 4.78}
-        req = request.json
+        req = request.form
         xmlReq = uspsReq.getPriceCalculatorReq(req)
         url = (
             "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML={}".format(xmlReq))
         r = requests.get(url)
         res = uspsReq.getPriceResponse(r.content)
-        return json.dumps(res), 201
-
+        result = json.dumps(res)
+        # return json.dumps(res), 201
+        return redirect("http://localhost:63342/USPS_EasyReturns/src/results.html?price1="+res[0]+"&price2="+res[1], code=200)
+        # return redirect(url_for("http://localhost:63342/USPS_EasyReturns/src/results.html", messages=10), code=200)
+        # return redirect(url_for("http://localhost:63342/USPS_EasyReturns/src/results.html", price1=100))
 
 @app.route('/shipment', methods=['POST'])
 def api_request_shipment():
@@ -65,13 +68,17 @@ def api_request_shipment():
         # return transactionId and uid
         req = request.json
        # print (req)
-        from_address = req['originating-address']
-        to_address = req['destination-address']
-        category = req['category']
-        date = req['date']
-        paymentID = req['payment-transaction']
-        payment_method = req['payment-method']
-        payment_amount = req['payment-amount']
+        from_address = req['from_address1']
+        to_address = req['to_address1']
+        #category = req['category']
+        category = "First Class"
+        # date = req['date']
+        date = "02/09/2019"
+        # paymentID = req['payment-transaction']
+        paymentID = "568425347"
+        # payment_method = req['payment-method']
+        payment_method = "Paypal"
+        payment_amount = "49.55"
 
         hash_str = "{}:{}:{}:{}:{}".format(
             from_address, to_address, category, date, paymentID)

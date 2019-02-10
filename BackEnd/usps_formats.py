@@ -2,9 +2,10 @@ from bs4 import BeautifulSoup
 
 
 def getPriceCalculatorReq(packageDetails):
-    zipSource = packageDetails['zipSource']
-    zipDestination = packageDetails['zipDestination']
-    ounces = packageDetails['ounces']
+    zipSource = packageDetails['from_zipcode']
+    zipDestination = packageDetails['to_zipcode']
+    # ounces = packageDetails['ounces']
+    ounces= 4.5
 
     file1 = open("xmls/priceCalulationRequest.xml", "r+")
     filebuf = file1.read()
@@ -37,8 +38,9 @@ def getPriceResponse(reqXml):
             #     serviceName = service.find('ServiceName').get_text()
             #     price = service.find('Price').get_text()
             #     res.append({'ServiceType': serviceName, 'Price': price})
-        serviceName = package.find('MailService').get_text()
-        serviceName = serviceName.split('&')[0]
+        # serviceName = package.find('MailService').get_text()
+        # serviceName = serviceName.split('&')[0]
         price = package.find('Rate').get_text()
-        res.append({'ServiceType': serviceName, 'Price': price})
+        # res.append({'ServiceType': serviceName, 'Price': price})
+        res.append(price)
     return res
