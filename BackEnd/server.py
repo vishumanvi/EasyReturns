@@ -6,21 +6,12 @@ from ast import literal_eval
 import usps_formats as uspsReq
 import requests
 import json
+import pickledb
+import hashlib
 
 app = Flask(__name__)
-_redis_port = 6379
-redisList = ""
-r = redis.StrictRedis(host='localhost', port=_redis_port, db=0)
-
-
-def getDetails():
-    # print(redisList)
-    return literal_eval((r.get(redisList)).decode('utf-8'))
-
-
-def setDetails(data):
-    # print(redisList)
-    r.set(redisList, data)
+db_name = "shipments.db"
+db = pickledb.load(db_name, True)
 
 
 @app.route('/')
@@ -46,7 +37,7 @@ def api_echo():
         return "ECHO: DELETE"
 
 
-@app.route('/cost', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+@app.route('/cost', methods=['POST'])
 def api_calculate_cost():
     if request.method == 'POST':
         # get the fields from packageDetails
@@ -60,40 +51,90 @@ def api_calculate_cost():
         url = (
             "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&XML={}".format(xmlReq))
         r = requests.get(url)
-        response = r.content
-        print(response)
-        return ' ', 201
+        res = uspsReq.getPriceResponse(r.content)
+        return json.dumps(res), 201
 
 
-@app.route('/shipment', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api_request_shipment(transactionDetails):
+@app.route('/shipment', methods=['POST'])
+def api_request_shipment():
     if request.method == 'POST':
         # get entire package data like address etc from transactionDetails
         # call payment api to make payment
         # Once payment is done, store transaction details and address/package details in reddis
         # Generate a unique Id for this
         # return transactionId and uid
-        pass
+        req = request.json
+       # print (req)
+        from_address = req['originating-address']
+        to_address = req['destination-address']
+        category = req['category']
+        date = req['date']
+        paymentID = req['payment-transaction']
+        payment_method = req['payment-method']
+        payment_amount = req['payment-amount']
+
+        hash_str = "{}:{}:{}:{}:{}".format(
+            from_address, to_address, category, date, paymentID)
+        hash_value = hashlib.sha1(hash_str.encode("UTF-8")).hexdigest()
+
+        # print(hash_value)
+        #shipment_details = dict()
+
+        shipping_details = {'from-address': from_address, 'to-address': to_address, 'date': date,
+                            'category': category, 'status': 'Created'}  # status: Created, AwaitingPickup, PickedUp, Delivered
+        payment_details = {'payment-method': paymentID,
+                           'payment-amount': payment_method, 'payment-transaction': payment_amount}
+        #shipment_details[hash_value] = {'shipment-details': shipping_details, 'payment-details': payment_details}
+
+        #print (shipment_details)
+        db.set(hash_value, {'shipment-details': shipping_details,
+                            'payment-details': payment_details})
+        # print(db.get(hash_value))
+
+        return hash_value, 201
 
 
-@app.route('/package/<uid>', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+@app.route('/package/<uid>', methods=['GET'])
 def api_get_package(uid):
     if request.method == 'GET':
         # get address details from reddis db for given uid
         # return details
         # this will  be used by postman/usps to get the details of package to deliver it
-        pass
+        shipment = db.get(uid)
+        if not shipment:
+            return 'Not Found', 404
+        shipment_details = shipment.get('shipment-details')
+        # print(shipment_details)
+        if shipment_details.get("status") == 'Created':
+            res = {"originating-address": shipment_details.get("from-address"),
+                   "destination-address": shipment_details.get("to-address"),
+                   "category": shipment_details.get("category"),
+                   "date": shipment_details.get("date")
+                   }
+            return json.dumps(res), 200
+        return 'Invalid Request', 200
 
 
-@app.route('/validate/<uid>', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+@app.route('/validate/<uid>', methods=['GET'])
 def api_validate_package(uid):
     if request.method == 'GET':
         # validate if the package with given uid is valid or not
         # If the id exists in db along with transactionID
         # also check status to make sure that this is new package
         # This will be used by postman to validate a package
-        # return true/false
-        pass
+        shipment = db.get(uid)
+        if not shipment:
+            return 'Not Found', 404
+        shipment_details = shipment.get('shipment-details')
+        # print(shipment_details)
+        if shipment_details.get("status") == 'Created':
+            res = {"originating-address": shipment_details.get("from-address"),
+                   "destination-address": shipment_details.get("to-address"),
+                   "category": shipment_details.get("category"),
+                   "date": shipment_details.get("date")
+                   }
+            return json.dumps(res), 200
+        return 'Invalid Request', 200
 
 
 if __name__ == "__main__":
